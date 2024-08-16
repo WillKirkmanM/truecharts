@@ -1,0 +1,61 @@
+image:
+  repository: ich777/steamcmd
+  tag: unturned@sha256:f45e6d6b70a90c815cc19d58b5576d248d680436f869cf4a50ae34b723423576
+  pullPolicy: IfNotPresent
+
+securityContext:
+  container:
+    runAsNonRoot: false
+    readOnlyRootFilesystem: false
+    runAsUser: 0
+    runAsGroup: 0
+
+service:
+  main:
+    enabled: true
+    ports:
+      main:
+        enabled: true
+        protocol: udp
+        port: 27015
+  steam:
+    enabled: true
+    ports:
+      steam:
+        enabled: true
+        protocol: tcp
+        port: 27016
+
+workload:
+  main:
+    podSpec:
+      containers:
+        main:
+          probes:
+            liveness:
+              enabled: false
+            readiness:
+              enabled: false
+            startup:
+              enabled: false
+          env:
+            GAME_PORT: "{{ .Values.service.main.ports.main.port }}"
+            GAME_ID: "1110390"
+            USERNAME: ""
+            PASSWRD: ""
+            ROCKET_FORCE_UPDATE: ""
+            ROCKET_MOD: ""
+            ROCKET_URL: https://ci.rocketmod.net/job/Rocket.Unturned/lastSuccessfulBuild/artifact/Rocket.Unturned/bin/Release/Rocket.zip
+            VALIDATE: false
+
+persistence:
+  serverfiles:
+    enabled: true
+    mountPath: /serverdata/serverfiles
+  steamcmd:
+    enabled: true
+    mountPath: /serverdata/steamcmd
+
+portal:
+  open:
+    enabled: false

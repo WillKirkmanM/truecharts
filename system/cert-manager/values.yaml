@@ -1,0 +1,41 @@
+image:
+  repository: tccr.io/tccr/scratch
+  pullPolicy: IfNotPresent
+  tag: latest@sha256:fa8db430d07a3b98f84cce7c7d56bb4ea6cdd64fb178d64227177caae47c343b
+
+service:
+  main:
+    enabled: false
+    ports:
+      main:
+        enabled: false
+
+workload:
+  main:
+    enabled: false
+
+portal:
+  open:
+    enabled: false
+
+operator:
+  register: true
+
+configmap:
+  dashboard:
+    enabled: true
+    labels:
+      grafana_dashboard: "1"
+    data:
+      cert-manager.json: >-
+        {{ .Files.Get "dashboard.json" | indent 8 }}
+
+certmanager:
+  dns01RecursiveNameservers: "1.1.1.1:53,1.0.0.1:53"
+  dns01RecursiveNameserversOnly: false
+  installCRDs: true
+  enableCertificateOwnerRef: true
+  prometheus:
+    enabled: true
+    servicemonitor:
+      enabled: true

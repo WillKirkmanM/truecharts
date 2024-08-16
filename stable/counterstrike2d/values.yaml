@@ -1,0 +1,38 @@
+image:
+  pullPolicy: IfNotPresent
+  repository: ich777/cs2dserver
+  tag: latest@sha256:afe3f9d8539f2814ecfcd79efd5b5b003b1cd1f5fab980fd9244c70dee56e13f
+persistence:
+  serverfiles:
+    enabled: true
+    mountPath: /serverdata/serverfiles
+portal:
+  open:
+    enabled: true
+securityContext:
+  container:
+    readOnlyRootFilesystem: false
+    runAsGroup: 0
+    runAsUser: 0
+service:
+  main:
+    ports:
+      main:
+        port: 36963
+        protocol: udp
+        targetPort: 36963
+workload:
+  main:
+    podSpec:
+      containers:
+        main:
+          env:
+            FORCE_UPDATE: ""
+            GAME_PARAMS: ""
+          probes:
+            liveness:
+              enabled: false
+            readiness:
+              enabled: false
+            startup:
+              enabled: false

@@ -1,0 +1,33 @@
+image:
+  pullPolicy: IfNotPresent
+  repository: ich777/thunderbird
+  tag: latest@sha256:8d40a6d251508f53b606ee411a9980810cb9674eb9b5f12ff9852ed9a5647eca
+persistence:
+  data:
+    enabled: true
+    mountPath: /thunderbird
+portal:
+  open:
+    enabled: true
+securityContext:
+  container:
+    readOnlyRootFilesystem: false
+    runAsGroup: 0
+    runAsUser: 0
+service:
+  main:
+    ports:
+      main:
+        port: 10291
+        targetPort: 8080
+workload:
+  main:
+    podSpec:
+      containers:
+        main:
+          env:
+            CUSTOM_RES_H: "768"
+            CUSTOM_RES_W: "1280"
+            DATA_PERM: "770"
+            THUNDERBIRD_LANG: en-US
+            THUNDERBIRD_V: latest

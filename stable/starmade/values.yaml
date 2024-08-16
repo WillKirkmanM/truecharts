@@ -1,0 +1,36 @@
+image:
+  pullPolicy: IfNotPresent
+  repository: ich777/starmade-server
+  tag: latest@sha256:746c1be34ad90a6f3c85f6114ff5847f58e1991e8efefa016c50770f09839909
+persistence:
+  serverfiles:
+    enabled: true
+    mountPath: /starmade
+portal:
+  open:
+    enabled: true
+securityContext:
+  container:
+    readOnlyRootFilesystem: false
+    runAsGroup: 0
+    runAsUser: 0
+service:
+  main:
+    ports:
+      main:
+        port: 4242
+        protocol: tcp
+        targetPort: 4242
+workload:
+  main:
+    podSpec:
+      containers:
+        main:
+          env:
+            DATA_PERM: "770"
+            DL_URL: http://files.star-made.org/StarMade-Starter.jar
+            GAME_PARAMS: ""
+            RUNTIME_NAME: basicjre
+            STARTER_PARAMS: -nogui
+            XMS_SIZE: "1024"
+            XMX_SIZE: "1024"

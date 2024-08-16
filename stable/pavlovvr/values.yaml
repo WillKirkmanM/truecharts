@@ -1,0 +1,62 @@
+image:
+  pullPolicy: IfNotPresent
+  repository: ich777/steamcmd
+  tag: pavlovvr@sha256:4fab15de8a97906f4892bac64912c322cfb57be6f4f48e63528039ace76c0875
+persistence:
+  serverfiles:
+    enabled: true
+    mountPath: /serverdata/serverfiles
+  steamcmd:
+    enabled: true
+    mountPath: /serverdata/steamcmd
+portal:
+  open:
+    enabled: true
+secretEmv:
+  PASSWRD: ""
+  USERNAME: ""
+securityContext:
+  container:
+    readOnlyRootFilesystem: false
+    runAsGroup: 0
+    runAsUser: 0
+service:
+  main:
+    ports:
+      main:
+        port: 7777
+        protocol: tcp
+        targetPort: 7777
+  udp2:
+    enabled: true
+    ports:
+      udp2:
+        enabled: true
+        port: 8177
+        protocol: udp
+        targetPort: 8177
+  udp3:
+    enabled: true
+    ports:
+      udp3:
+        enabled: true
+        port: 7977
+        protocol: udp
+        targetPort: 7977
+  udpgameport:
+    enabled: true
+    ports:
+      udpgameport:
+        enabled: true
+        port: 7777
+        protocol: udp
+        targetPort: 7777
+workload:
+  main:
+    podSpec:
+      containers:
+        main:
+          env:
+            GAME_ID: "622970"
+            GAME_PARAMS: ""
+            VALIDATE: "false"

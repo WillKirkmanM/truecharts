@@ -1,0 +1,83 @@
+image:
+  repository: bitnami/mariadb
+  pullPolicy: IfNotPresent
+  tag: 11.4.3@sha256:89877c9c33cbc4850b56e1b40a5a5b5d8322c787c8a2aa17326d12d2da9b341e
+
+includeCommon: true
+workload:
+  main:
+    podSpec:
+      containers:
+        main:
+          env:
+            MARIADB_PASSWORD: "{{ .Values.password }}"
+            MARIADB_ROOT_PASSWORD: "{{ .Values.rootPassword }}"
+            MARIADB_USER: "{{ .Values.mariadbUsername }}"
+            MARIADB_DATABASE: "{{ .Values.mariadbDatabase }}"
+            MARIADB_EXTRA_FLAGS: "--init-file=/init/passinit.sql"
+          probes:
+            liveness:
+              enabled: true
+              type: exec
+              command:
+                - /bin/bash
+                - -ec
+                - "until /opt/bitnami/scripts/mariadb/healthcheck.sh; do sleep 2; done"
+            readiness:
+              enabled: true
+              type: exec
+              command:
+                - /bin/bash
+                - -ec
+                - "until /opt/bitnami/scripts/mariadb/healthcheck.sh; do sleep 2; done"
+            startup:
+              enabled: true
+              type: exec
+              command:
+                - /bin/bash
+                - -ec
+                - "until /opt/bitnami/scripts/mariadb/healthcheck.sh; do sleep 2; done"
+service:
+  main:
+    ports:
+      main:
+        port: 3306
+        targetPort: 3306
+securityContext:
+  container:
+    readOnlyRootFilesystem: false
+    runAsGroup: 0
+persistence:
+  data:
+    enabled: true
+    mountPath: "/bitnami/mariadb"
+  passinit:
+    enabled: true
+    type: configmap
+    objectName: passinit
+    items:
+      - key: passinit.sql
+        path: passinit.sql
+    targetSelector:
+      main:
+        main:
+          subPath: passinit.sql
+          mountPath: /init/passinit.sql
+
+configmap:
+  passinit:
+    enabled: true
+    data:
+      passinit.sql: |
+        ALTER USER root@'%' IDENTIFIED VIA mysql_native_password USING PASSWORD("{{ .Values.rootPassword }}");
+        ALTER USER {{ .Values.mariadbUsername }}@'%' IDENTIFIED VIA mysql_native_password USING PASSWORD("{{ .Values.password }}");
+        FLUSH PRIVILEGES;
+
+mariadbUsername: "test"
+mariadbDatabase: "test"
+## DEVNOTE: These password defaults always need to match common
+rootPassword: "PLACEHOLDERROOTPASSWORD"
+password: "PLACEHOLDERPASSWORD"
+portal:
+  open:
+    enabled: false

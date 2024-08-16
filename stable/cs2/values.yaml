@@ -1,0 +1,72 @@
+image:
+  repository: ich777/steamcmd
+  pullPolicy: IfNotPresent
+  tag: cs2@sha256:8c6d968a6e06cba3a55dc20236bf8896e49abf7036b3b98863114a822d53ed84
+
+securityContext:
+  container:
+    readOnlyRootFilesystem: false
+    runAsUser: 0
+    runAsGroup: 0
+
+service:
+  main:
+    ports:
+      main:
+        protocol: udp
+        port: 27015
+  rcon:
+    enabled: true
+    ports:
+      rcon:
+        enabled: true
+        protocol: tcp
+        port: 27020
+cs2:
+  game:
+    id: 730
+    user: ""
+    pass: ""
+    validate: false
+    params:
+      - -dedicated
+      - -dev
+      - +map
+      - de_inferno
+      - +game_type 0
+      - +game_mode 1
+      - -usercon
+
+workload:
+  main:
+    podSpec:
+      containers:
+        main:
+          probes:
+            liveness:
+              enabled: false
+            readiness:
+              enabled: false
+            startup:
+              enabled: false
+          env:
+            STEAMCMD_DIR: "{{ .Values.persistence.steamcmd.mountPath }}"
+            SERVER_DIR: "{{ .Values.persistence.serverfiles.mountPath }}"
+            GAME_PORT: "{{ .Values.service.main.ports.main.port }}"
+            GAME_ID: "{{ .Values.cs2.game.id }}"
+            USERNAME: "{{ .Values.cs2.game.user }}"
+            PASSWRD: "{{ .Values.cs2.game.password }}"
+            GAME_PARAMS: '{{ join " " .Values.cs2.game.params }}'
+            VALIDATE: "{{ .Values.cs2.game.validate }}"
+
+persistence:
+  steamcmd:
+    enabled: true
+    mountPath: /serverdata/steamcmd
+  serverfiles:
+    enabled: true
+    mountPath: /serverdata/serverfiles
+
+portal:
+  open:
+    enabled: false

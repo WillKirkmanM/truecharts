@@ -1,0 +1,28 @@
+image:
+  pullPolicy: IfNotPresent
+  repository: x1unix/go-playground
+  tag: latest@sha256:9d4008423ed5c69494cec4eb4896fd0c6c89cd970dbf2e6003e0f6bfcc5fea60
+persistence: {}
+portal:
+  open:
+    enabled: true
+securityContext:
+  container:
+    readOnlyRootFilesystem: false
+    runAsGroup: 0
+    runAsUser: 0
+service:
+  main:
+    ports:
+      main:
+        port: 8888
+        protocol: tcp
+        targetPort: 8000
+workload:
+  main:
+    podSpec:
+      containers:
+        main:
+          env:
+            APP_CLEAN_INTERVAL: 10m
+            APP_DEBUG: "false"

@@ -1,0 +1,32 @@
+image:
+  pullPolicy: IfNotPresent
+  repository: ekzhang/rustpad
+  tag: latest@sha256:ddea065cee9bc984f7d8924d8eaaee5f317baca0d4691cbb7bcf33fe86536439
+persistence:
+  storagedatabase:
+    enabled: true
+    mountPath: /persist
+portal:
+  open:
+    enabled: true
+securityContext:
+  container:
+    readOnlyRootFilesystem: false
+    runAsGroup: 0
+    runAsUser: 0
+service:
+  main:
+    ports:
+      main:
+        port: 3030
+        protocol: tcp
+        targetPort: 3030
+workload:
+  main:
+    podSpec:
+      containers:
+        main:
+          env:
+            EXPIRY_DAYS: "1"
+            RUST_LOG: info
+            SQLITE_URI: sqlite:///persist/rustpad_db.db

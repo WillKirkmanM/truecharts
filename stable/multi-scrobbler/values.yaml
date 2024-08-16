@@ -1,0 +1,27 @@
+image:
+  repository: foxxmd/multi-scrobbler
+  tag: latest@sha256:11c14898ed49fec2fdb516c9f7c1f924cac1bb865ebd5e775416cae1b0f19235
+  pullPolicy: IfNotPresent
+
+securityContext:
+  container:
+    readOnlyRootFilesystem: false
+    runAsNonRoot: false
+    runAsGroup: 0
+    runAsUser: 0
+
+service:
+  main:
+    ports:
+      main:
+        port: 9078
+        targetPort: 9078
+
+persistence:
+  config:
+    enabled: true
+    mountPath: /config
+
+portal:
+  open:
+    enabled: true

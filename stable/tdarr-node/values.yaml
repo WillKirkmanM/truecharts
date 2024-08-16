@@ -1,0 +1,51 @@
+image:
+  repository: haveagitgat/tdarr_node
+  pullPolicy: IfNotPresent
+  tag: 2.24.03@sha256:99545bdedf1800a00403124821f63f0e0e466dd4c71111d1c5b953d0cc9ce483
+service:
+  main:
+    enabled: false
+    ports:
+      main:
+        enabled: false
+persistence:
+  configs:
+    enabled: true
+    mountPath: "/app/configs"
+  logs:
+    enabled: true
+    mountPath: "/app/logs"
+  transcode-cache:
+    enabled: true
+    mountPath: "/temp"
+  media:
+    enabled: true
+    mountPath: "/media"
+  varrun:
+    enabled: true
+portal:
+  open:
+    enabled: false
+securityContext:
+  container:
+    readOnlyRootFilesystem: false
+    runAsNonRoot: false
+    runAsUser: 0
+    runAsGroup: 0
+workload:
+  main:
+    podSpec:
+      containers:
+        main:
+          probes:
+            liveness:
+              enabled: false
+            readiness:
+              enabled: false
+            startup:
+              enabled: false
+          env:
+            # User Defined
+            nodeID: "myFirstTdarrNode"
+            serverIP: "0.0.0.0"
+            serverPort: 8266

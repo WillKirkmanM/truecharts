@@ -1,0 +1,38 @@
+image:
+  pullPolicy: IfNotPresent
+  repository: ich777/urbanterror
+  tag: latest@sha256:ab6e7c293a70847caedda9d60dbf85db9be68f115ebabd719b9c06717049c007
+persistence:
+  datadir:
+    enabled: true
+    mountPath: /urbanterror
+portal:
+  open:
+    enabled: true
+securityContext:
+  container:
+    readOnlyRootFilesystem: false
+    runAsGroup: 0
+    runAsUser: 0
+service:
+  main:
+    ports:
+      main:
+        port: 27960
+        protocol: udp
+        targetPort: 27960
+workload:
+  main:
+    podSpec:
+      containers:
+        main:
+          env:
+            CHECK_FOR_UPDATES: "true"
+            START_PARAMS: ""
+          probes:
+            liveness:
+              enabled: false
+            readiness:
+              enabled: false
+            startup:
+              enabled: false

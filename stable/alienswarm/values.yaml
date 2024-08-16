@@ -1,0 +1,54 @@
+image:
+  pullPolicy: IfNotPresent
+  repository: ich777/steamcmd
+  tag: alienswarm@sha256:093842ceacf8af5c6a626ba165d23ec01327e37bbe8053e4037a03481de38a34
+persistence:
+  serverfiles:
+    enabled: true
+    mountPath: /serverdata/serverfiles
+  steamcmd:
+    enabled: true
+    mountPath: /serverdata/steamcmd
+portal:
+  open:
+    enabled: true
+securityContext:
+  container:
+    readOnlyRootFilesystem: false
+    runAsGroup: 0
+    runAsUser: 0
+service:
+  main:
+    ports:
+      main:
+        port: 27015
+        protocol: udp
+        targetPort: 27015
+  tcprconport:
+    enabled: true
+    ports:
+      tcprconport:
+        enabled: true
+        port: 27015
+        protocol: tcp
+        targetPort: 27015
+workload:
+  main:
+    podSpec:
+      containers:
+        main:
+          env:
+            GAME_ID: "635"
+            GAME_NAME: swarm
+            GAME_PARAMS: +map lobby -maxplayers 4 +exec server.cfg
+            GAME_PORT: "27015"
+            PASSWRD: ""
+            USERNAME: ""
+            VALIDATE: "false"
+          probes:
+            liveness:
+              port: "{{ .Values.service.tcprconport.ports.tcprconport.targetPort }}"
+            readiness:
+              port: "{{ .Values.service.tcprconport.ports.tcprconport.targetPort }}"
+            startup:
+              port: "{{ .Values.service.tcprconport.ports.tcprconport.targetPort }}"
